@@ -9,7 +9,10 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "check-prettier": "npx eslint-config-prettier src/main.tsx"
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "npx prettier . --write",
+    "format:check": "npx prettier . --check"
   },
   "repository": {
     "type": "git",
