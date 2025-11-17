@@ -1,0 +1,159 @@
+## Project: Admin Chat Panel (Phase 1)
+
+### 1\. Overview & Goal
+
+Build a web-based admin panel for customer support to read and reply to messages from the Flutter app. It must connect to the existing `lib-light` Firebase project.
+
+### 2\. Tech Stack
+
+- **Framework:** React 18+ with TypeScript
+- **Build Tool:** Vite
+- **Database:** Firebase Firestore (Project ID: `lib-light`) https://github.com/RievoCante/lib-light
+- **UI:** Tailwind CSS
+- **State:** TanStack Query (React Query)
+- **Routing:** React Router v6
+
+### 3\. Core Functionality
+
+1.  **Admin Login:**
+    - A simple `/login` page.
+    - No Firebase Auth for Phase 1.
+    - Validate credentials against `.env` variables (`VITE_ADMIN_USERNAME`, `VITE_ADMIN_PASSWORD`).
+    - On success, store a session token in `localStorage` and redirect to `/chats`.
+
+2.  **Chat List (Left Panel):**
+    - Fetch and display all documents from the `chats` collection.
+    - List must be sorted by the `updatedAt` field (descending).
+    - Each item shows: User ID, last message preview, and a relative timestamp.
+    - List must update in **real-time** (use `onSnapshot`).
+    - Clicking a chat item navigates to `/chats/:chatId`.
+
+3.  **Conversation View (Right Panel):**
+    - Fetch and display all messages from the `chats/{chatId}/messages` subcollection.
+    - Messages must be sorted by `timestamp` (ascending).
+    - View must update in **real-time**.
+    - User messages (`isFromUser: true`) are on the right; Admin messages (`isFromUser: false`) are on the left.
+
+4.  **Message Sending:**
+    - An admin sends a message by creating a new document in `chats/{chatId}/messages`.
+    - The new message document **must** have this structure:
+      - `chatId`: current chat ID
+      - `userId`: **"admin"**
+      - `content`: text from the input
+      - `isFromUser`: **false**
+      - `type`: "text"
+      - `timestamp`: `serverTimestamp()`
+    - After sending, the `updatedAt` field on the parent `chats/{chatId}` document **must** be updated with a `serverTimestamp()`.
+
+### 4\. Firebase & Data
+
+#### Firestore Structure
+
+```
+/chats/{userId}/
+  - userId: string
+  - createdAt: timestamp
+  - updatedAt: timestamp
+
+  /messages/{messageId}/
+    - chatId: string
+    - userId: string (either "70426672" or "admin")
+    - content: string
+    - isFromUser: boolean
+    - timestamp: timestamp
+    - type: string ("text" | "faq")
+```
+
+#### TypeScript Interfaces
+
+```typescript
+interface SupportMessage {
+  id: string; // Firestore document ID
+  chatId: string;
+  userId: string; // User ID or "admin"
+  content: string;
+  isFromUser: boolean;
+  timestamp: Date;
+  type: 'text' | 'faq';
+}
+
+interface Chat {
+  id: string; // Document ID (which is the userId)
+  userId: string;
+  createdAt: Date;
+  updatedAt: Date;
+  lastMessage?: SupportMessage; // For list display
+}
+```
+
+#### Key Firestore Queries
+
+```typescript
+// 1. Get all chats, sorted by last update
+const chatsRef = collection(db, 'chats');
+const q = query(chatsRef, orderBy('updatedAt', 'desc'));
+
+// 2. Get all messages for one chat, sorted by time
+const messagesRef = collection(db, 'chats', chatId, 'messages');
+const q = query(messagesRef, orderBy('timestamp', 'asc'));
+
+// 3. Send a new admin message
+const messagesRef = collection(db, 'chats', chatId, 'messages');
+await addDoc(messagesRef, {
+  chatId: chatId,
+  userId: 'admin',
+  content: 'Hello from admin',
+  isFromUser: false,
+  type: 'text',
+  timestamp: serverTimestamp(),
+});
+
+// 4. Update the parent chat's timestamp
+const chatRef = doc(db, 'chats', chatId);
+await updateDoc(chatRef, {
+  updatedAt: serverTimestamp(),
+});
+```
+
+### 5\. Environment Variables (.env.example)
+
+```env
+# Firebase Configuration
+VITE_FIREBASE_API_KEY=your-api-key
+VITE_FIREBASE_AUTH_DOMAIN=your-auth-domain
+VITE_FIREBASE_PROJECT_ID=lib-light
+VITE_FIREBASE_STORAGE_BUCKET=your-storage-bucket
+VITE_FIREBASE_MESSAGING_SENDER_ID=your-messaging-sender-id
+VITE_FIREBASE_APP_ID=your-app-id
+
+# Admin Credentials (Phase 1)
+VITE_ADMIN_USERNAME=admin
+VITE_ADMIN_PASSWORD=change-this-password
+```
+
+### 6\. File Structure
+
+- **File Structure:**
+  ```
+  src/
+  ├── components/
+  │   ├── chat/
+  │   │   ├── ChatList.tsx
+  │   │   ├── ChatConversation.tsx
+  │   │   └── MessageBubble.tsx
+  │   └── common/
+  │       ├── Layout.tsx
+  │       └── LoadingSpinner.tsx
+  ├── config/
+  │   └── firebase.ts
+  ├── hooks/
+  │   ├── useChats.ts
+  │   └── useMessages.ts
+  ├── services/
+  │   ├── chatService.ts
+  │   └── messageService.ts
+  ├── types/
+  │   └── chat.ts
+  ├── App.tsx
+  └── main.tsx
+  ```
