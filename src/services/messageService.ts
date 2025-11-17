@@ -10,11 +10,9 @@ import {
 } from 'firebase/firestore';
 import { db } from '@/config/firebase';
 import { updateChatTimestamp } from './chatService';
-import type { SupportMessage } from '@/types/chat';
 
-/**
- * Get Firestore query for messages in a chat, sorted by timestamp ascending
- */
+//Get Firestore query for messages in a chat, sorted by timestamp ascending
+
 export function getMessagesQuery(chatId: string): Query {
   try {
     const messagesRef = collection(db, 'chats', chatId, 'messages');
@@ -25,9 +23,8 @@ export function getMessagesQuery(chatId: string): Query {
   }
 }
 
-/**
- * Send an admin message to a chat
- */
+//Send an admin message to a chat
+
 export async function sendAdminMessage(
   chatId: string,
   content: string
@@ -60,9 +57,8 @@ export async function sendAdminMessage(
   }
 }
 
-/**
- * Convert Firestore timestamp to Date
- */
+//Convert Firestore timestamp to Date
+
 export function convertTimestamp(timestamp: Timestamp | Date): Date {
   if (timestamp instanceof Date) {
     return timestamp;
