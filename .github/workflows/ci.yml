@@ -52,3 +52,8 @@ jobs:
                   name: build
                   path: dist/
                   retention-days: 7
+            - name: "notify vercel"
+              if: always()
+              uses: "vercel/repository-dispatch/actions/status@v1"
+              with:
+                  name: "Vercel - lib-light-admin-panel: lint"
