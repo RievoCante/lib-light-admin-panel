@@ -1,4 +1,7 @@
 // Authentication utilities for session management
+import { auth } from '@/config/firebase';
+import { signOut as firebaseSignOut } from 'firebase/auth';
+
 const SESSION_TOKEN_KEY = 'admin_session_token';
 
 export function setSessionToken(token: string): void {
@@ -14,5 +17,15 @@ export function removeSessionToken(): void {
 }
 
 export function isAuthenticated(): boolean {
-  return !!getSessionToken();
+  return !!auth.currentUser && !!getSessionToken();
+}
+
+export async function signOut(): Promise<void> {
+  try {
+    await firebaseSignOut(auth);
+    removeSessionToken();
+  } catch (error) {
+    console.error('Error signing out:', error);
+    throw error;
+  }
 }

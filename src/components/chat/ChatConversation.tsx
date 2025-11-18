@@ -1,8 +1,6 @@
 // Chat conversation component matching Figma design
 import { useState, useRef, useEffect } from 'react';
 import {
-  Pause,
-  X,
   ChevronDown,
   User,
   Paperclip,
@@ -73,22 +71,6 @@ export function ChatConversation({ chat }: ChatConversationProps) {
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <Button
-            variant="outline"
-            size="sm"
-            className="h-7 px-2 text-xs font-semibold"
-          >
-            <Pause className="w-3 h-3 mr-2" />
-            Pause
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            className="h-7 px-2 text-xs font-semibold bg-[#2F3035] text-white border-[#2F3035]"
-          >
-            <X className="w-3 h-3 mr-2" />
-            Close
-          </Button>
           <Button variant="ghost" size="icon" className="h-7 w-7">
             <ChevronDown className="w-3 h-3" />
           </Button>
@@ -135,16 +117,7 @@ export function ChatConversation({ chat }: ChatConversationProps) {
               <Underline className="w-4 h-4 text-[#797782]" />
             </div>
           </div>
-          <div className="flex items-center justify-between">
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              className="h-7 px-2 text-xs font-semibold"
-            >
-              <Paperclip className="w-3 h-3 mr-2" />
-              Assign to Form
-            </Button>
+          <div className="flex items-center justify-end">
             <Button
               type="submit"
               size="sm"

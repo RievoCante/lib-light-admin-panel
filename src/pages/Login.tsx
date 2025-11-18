@@ -1,13 +1,15 @@
 // Login page component
 import { useState, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { auth } from '@/config/firebase';
 import { setSessionToken } from '@/utils/auth';
 
 export function Login() {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -19,23 +21,28 @@ export function Login() {
     setLoading(true);
 
     try {
-      const adminUsername = import.meta.env.VITE_ADMIN_USERNAME;
-      const adminPassword = import.meta.env.VITE_ADMIN_PASSWORD;
+      // Sign in directly with Firebase Auth (no client-side password check)
+      await signInWithEmailAndPassword(auth, email, password);
 
-      if (!adminUsername || !adminPassword) {
-        throw new Error('Admin credentials not configured');
-      }
+      // Set session token for route protection compatibility
+      setSessionToken('authenticated');
+      navigate('/chats');
+    } catch (err: any) {
+      console.error('Login error:', err);
 
-      if (username === adminUsername && password === adminPassword) {
-        // Generate a simple session token
-        const token = `admin_${Date.now()}`;
-        setSessionToken(token);
-        navigate('/chats');
+      // Handle Firebase Auth errors
+      if (
+        err.code === 'auth/invalid-credential' ||
+        err.code === 'auth/user-not-found'
+      ) {
+        setError('Invalid email or password');
+      } else if (err.code === 'auth/network-request-failed') {
+        setError('Network error. Please check your connection.');
+      } else if (err.code === 'auth/too-many-requests') {
+        setError('Too many failed attempts. Please try again later.');
       } else {
-        setError('Invalid username or password');
+        setError(err.message || 'Login failed. Please try again.');
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login failed');
     } finally {
       setLoading(false);
     }
@@ -50,14 +57,14 @@ export function Login() {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <label htmlFor="username" className="text-sm font-medium">
-                Username
+              <label htmlFor="email" className="text-sm font-medium">
+                Email
               </label>
               <Input
-                id="username"
-                type="text"
-                value={username}
-                onChange={e => setUsername(e.target.value)}
+                id="email"
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
                 required
                 disabled={loading}
               />
