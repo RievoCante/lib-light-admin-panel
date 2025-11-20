@@ -389,5 +389,3 @@ it('should handle errors', async () => {
 3. Add one component test
 4. Gradually increase coverage
 5. Focus on critical paths first
-
-

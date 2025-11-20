@@ -15,12 +15,14 @@
 ### 1. **Unit Tests** (70% of tests) - Foundation Layer
 
 **What to Test:**
+
 - **Services** (`chatService.ts`, `messageService.ts`, `userService.ts`)
 - **Utilities** (`auth.ts`, `utils.ts`)
 - **Pure functions** (timestamp conversion, data transformation)
 - **Type guards and validators**
 
 **Why:**
+
 - Fastest to write and run
 - Highest ROI (Return on Investment)
 - Catches bugs early
@@ -28,6 +30,7 @@
 - No external dependencies
 
 **Example Priority:**
+
 1. ✅ `convertTimestamp()` - Critical utility used everywhere
 2. ✅ `getUser()` - Core data fetching logic
 3. ✅ `isAuthenticated()` - Security-critical function
@@ -38,18 +41,21 @@
 ### 2. **Integration Tests** (20% of tests) - Middle Layer
 
 **What to Test:**
+
 - **Custom Hooks** (`useChats`, `useMessages`, `useUser`)
 - **Component + Hook interactions**
 - **Firebase integration** (with mocks)
 - **Error handling flows**
 
 **Why:**
+
 - Tests how pieces work together
 - Catches integration bugs
 - Validates real-world scenarios
 - Ensures hooks handle edge cases
 
 **Example Priority:**
+
 1. ✅ `useChats` hook - Real-time listener behavior
 2. ✅ `useUser` hook - User data fetching and updates
 3. ✅ `ProtectedRoute` + Auth state
@@ -60,18 +66,21 @@
 ### 3. **Component Tests** (8% of tests) - UI Layer
 
 **What to Test:**
+
 - **User interactions** (clicks, form submissions)
 - **Conditional rendering** (loading states, errors)
 - **Props and state changes**
 - **Accessibility** (a11y)
 
 **Why:**
+
 - Ensures UI works as expected
 - Validates user experience
 - Catches visual bugs
 - Tests accessibility
 
 **Example Priority:**
+
 1. ✅ `Login` - Form submission, error handling
 2. ✅ `ChatList` - Chat selection, empty states
 3. ✅ `ChatConversation` - Message sending
@@ -82,17 +91,20 @@
 ### 4. **E2E Tests** (2% of tests) - Critical Paths
 
 **What to Test:**
+
 - **Critical user journeys** (login → view chats → send message)
 - **Authentication flows**
 - **Data persistence**
 
 **Why:**
+
 - Tests complete user experience
 - Catches system-wide issues
 - Validates production-like scenarios
 - Slow but high confidence
 
 **Example Priority:**
+
 1. ✅ Complete login flow
 2. ✅ View chat list and select chat
 3. ✅ Send message as admin
@@ -103,6 +115,7 @@
 ## What NOT to Test (Anti-Patterns)
 
 ### ❌ Don't Test:
+
 1. **Third-party libraries** (Firebase SDK, React Router, TanStack Query)
    - They're already tested by their maintainers
    - Mock them instead
@@ -128,18 +141,19 @@
 ```json
 {
   "devDependencies": {
-    "vitest": "^1.0.0",           // Fast test runner (Vite-native)
-    "@testing-library/react": "^14.0.0",  // Component testing
+    "vitest": "^1.0.0", // Fast test runner (Vite-native)
+    "@testing-library/react": "^14.0.0", // Component testing
     "@testing-library/jest-dom": "^6.0.0", // DOM matchers
     "@testing-library/user-event": "^14.0.0", // User interactions
-    "@vitest/ui": "^1.0.0",       // Test UI
-    "msw": "^2.0.0",              // Mock Service Worker (API mocking)
-    "firebase-mock": "^0.0.1"    // Firebase mocking (or custom mocks)
+    "@vitest/ui": "^1.0.0", // Test UI
+    "msw": "^2.0.0", // Mock Service Worker (API mocking)
+    "firebase-mock": "^0.0.1" // Firebase mocking (or custom mocks)
   }
 }
 ```
 
 **Why Vitest?**
+
 - Native Vite integration (same config)
 - Fast (ESM support)
 - Jest-compatible API
@@ -150,6 +164,7 @@
 ## Testing Priorities by Risk
 
 ### 🔴 **Critical (Test First)**
+
 1. **Authentication** (`auth.ts`, `Login.tsx`)
    - Security vulnerability if broken
    - Users can't access the app
@@ -163,6 +178,7 @@
    - App crashes if not handled
 
 ### 🟡 **Important (Test Second)**
+
 4. **Message Sending** (`sendAdminMessage`)
    - Core feature
    - Data integrity critical
@@ -172,6 +188,7 @@
    - Prevents unauthorized access
 
 ### 🟢 **Nice to Have (Test Later)**
+
 6. **UI Components** (Styling, animations)
 7. **Edge Cases** (Empty states, long lists)
 8. **Performance** (Large datasets)
@@ -229,6 +246,7 @@ describe('chatService', () => {
 ```
 
 **Why this test:**
+
 - ✅ Tests the function's behavior
 - ✅ Validates correct Firebase calls
 - ✅ Tests error handling
@@ -253,7 +271,7 @@ vi.mock('firebase/firestore', () => ({
 
 vi.mock('@/services/chatService', () => ({
   getChatsQuery: vi.fn(() => 'mock-query'),
-  convertTimestamp: vi.fn((ts) => new Date(ts)),
+  convertTimestamp: vi.fn(ts => new Date(ts)),
 }));
 
 describe('useChats', () => {
@@ -312,7 +330,7 @@ describe('useChats', () => {
 
   it('should handle errors', async () => {
     const error = new Error('Firebase error');
-    
+
     onSnapshot.mockImplementation((query, callback, errorCallback) => {
       setTimeout(() => {
         errorCallback(error);
@@ -343,6 +361,7 @@ describe('useChats', () => {
 ```
 
 **Why this test:**
+
 - ✅ Tests real-time listener behavior
 - ✅ Validates loading states
 - ✅ Tests error handling
@@ -445,6 +464,7 @@ describe('Login', () => {
 ```
 
 **Why this test:**
+
 - ✅ Tests user interactions
 - ✅ Validates form behavior
 - ✅ Tests error states
@@ -455,20 +475,22 @@ describe('Login', () => {
 ## Testing Best Practices
 
 ### 1. **AAA Pattern** (Arrange, Act, Assert)
+
 ```typescript
 it('should do something', () => {
   // Arrange: Set up test data
   const input = 'test';
-  
+
   // Act: Execute the function
   const result = functionToTest(input);
-  
+
   // Assert: Verify the result
   expect(result).toBe('expected');
 });
 ```
 
 ### 2. **Test Behavior, Not Implementation**
+
 ```typescript
 // ❌ Bad: Testing implementation
 expect(component.state.count).toBe(1);
@@ -478,6 +500,7 @@ expect(screen.getByText('Count: 1')).toBeInTheDocument();
 ```
 
 ### 3. **Use Descriptive Test Names**
+
 ```typescript
 // ❌ Bad
 it('test 1', () => {});
@@ -487,6 +510,7 @@ it('should display error message when Firebase authentication fails', () => {});
 ```
 
 ### 4. **One Assertion Per Test (When Possible)**
+
 ```typescript
 // ❌ Bad: Multiple concerns
 it('should handle login', () => {
@@ -502,6 +526,7 @@ it('should display error on authentication failure', () => {});
 ```
 
 ### 5. **Mock External Dependencies**
+
 ```typescript
 // Always mock Firebase, APIs, etc.
 vi.mock('firebase/firestore');
@@ -509,6 +534,7 @@ vi.mock('@/config/firebase');
 ```
 
 ### 6. **Test Edge Cases**
+
 - Empty data
 - Error states
 - Loading states
@@ -520,12 +546,14 @@ vi.mock('@/config/firebase');
 ## Coverage Goals
 
 ### Minimum Coverage Targets:
+
 - **Services**: 80%+ (critical business logic)
 - **Hooks**: 70%+ (complex state management)
 - **Components**: 60%+ (user interactions)
 - **Utilities**: 90%+ (pure functions)
 
 ### Don't Obsess Over 100%
+
 - Focus on **meaningful** tests
 - Test **critical paths** first
 - **Quality > Quantity**
@@ -567,15 +595,18 @@ Add to `.github/workflows/ci.yml`:
 ## Summary: Testing Priorities
 
 ### Start Here (Week 1):
+
 1. **Services** - `chatService`, `userService`, `messageService`
 2. **Auth utilities** - `auth.ts`
 3. **Timestamp conversion** - Critical utility
 
 ### Then (Week 2):
+
 4. **Hooks** - `useChats`, `useMessages`, `useUser`
 5. **Login component** - Critical user flow
 
 ### Finally (Week 3+):
+
 6. **Other components** - ChatList, ChatConversation
 7. **E2E tests** - Critical user journeys
 
@@ -597,5 +628,3 @@ Add to `.github/workflows/ci.yml`:
 - [Vitest Documentation](https://vitest.dev/)
 - [Testing Library Best Practices](https://kentcdodds.com/blog/common-mistakes-with-react-testing-library)
 - [Firebase Testing Guide](https://firebase.google.com/docs/rules/unit-tests)
-
-
