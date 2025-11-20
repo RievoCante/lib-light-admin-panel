@@ -20,17 +20,20 @@ Web-based admin panel for customer support to read and reply to messages from th
 ## Setup
 
 1. Clone the repository:
+
 ```bash
 git clone https://github.com/RievoCante/lib-light-admin-panel.git
 cd lib-light-admin-panel
 ```
 
 2. Install dependencies:
+
 ```bash
 npm install
 ```
 
 3. Create `.env` file in the root directory:
+
 ```env
 VITE_FIREBASE_API_KEY=your_api_key
 VITE_FIREBASE_AUTH_DOMAIN=your_auth_domain
@@ -41,6 +44,7 @@ VITE_FIREBASE_APP_ID=your_app_id
 ```
 
 4. Start development server:
+
 ```bash
 npm run dev
 ```
@@ -68,4 +72,3 @@ The project is configured for deployment on **Vercel**. The `vercel.json` file h
 ## License
 
 ISC
-
