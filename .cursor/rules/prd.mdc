@@ -1,3 +1,8 @@
+---
+description: when you want to know the overview and techstack of this project.
+alwaysApply: false
+---
+
 ## Project: Admin Chat Panel (Phase 1)
 
 ### 1\. Overview & Goal
@@ -16,12 +21,14 @@ Build a web-based admin panel for customer support to read and reply to messages
 ### 3\. Core Functionality
 
 1.  **Admin Login:**
+
     - A simple `/login` page.
     - No Firebase Auth for Phase 1.
     - Validate credentials against `.env` variables (`VITE_ADMIN_USERNAME`, `VITE_ADMIN_PASSWORD`).
     - On success, store a session token in `localStorage` and redirect to `/chats`.
 
 2.  **Chat List (Left Panel):**
+
     - Fetch and display all documents from the `chats` collection.
     - List must be sorted by the `updatedAt` field (descending).
     - Each item shows: User ID, last message preview, and a relative timestamp.
@@ -29,6 +36,7 @@ Build a web-based admin panel for customer support to read and reply to messages
     - Clicking a chat item navigates to `/chats/:chatId`.
 
 3.  **Conversation View (Right Panel):**
+
     - Fetch and display all messages from the `chats/{chatId}/messages` subcollection.
     - Messages must be sorted by `timestamp` (ascending).
     - View must update in **real-time**.
@@ -57,7 +65,7 @@ Build a web-based admin panel for customer support to read and reply to messages
 
   /messages/{messageId}/
     - chatId: string
-    - userId: string (either "70426672" or "admin")
+    - userId: string
     - content: string
     - isFromUser: boolean
     - timestamp: timestamp

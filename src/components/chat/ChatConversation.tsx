@@ -12,9 +12,11 @@ import {
   Send,
 } from 'lucide-react';
 import { useMessages } from '@/hooks/useMessages';
+import { useUserDisplayName } from '@/hooks/useUserDisplayName';
 import { sendAdminMessage } from '@/services/messageService';
 import { MessageBubble } from './MessageBubble';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
+import { Avatar } from '@/components/common/Avatar';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import type { Chat } from '@/types/chat';
@@ -26,9 +28,12 @@ interface ChatConversationProps {
 export function ChatConversation({ chat }: ChatConversationProps) {
   const chatId = chat?.id || null;
   const { messages, loading, error } = useMessages(chatId);
+  const displayName = useUserDisplayName(chat?.userId || null);
   const [messageText, setMessageText] = useState('');
   const [sending, setSending] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const nameToShow = displayName || chat?.userId || 'Unknown';
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -64,9 +69,9 @@ export function ChatConversation({ chat }: ChatConversationProps) {
       {/* Header */}
       <div className="h-[62px] bg-white border-b border-[#F3F3F3] flex items-center justify-between px-6">
         <div className="flex items-center gap-2.5">
-          <div className="w-6 h-6 rounded-full bg-gray-200" />
+          <Avatar userId={chat?.userId || null} size="sm" />
           <div>
-            <div className="text-xs font-semibold">{chat.userId}</div>
+            <div className="text-xs font-semibold">{nameToShow}</div>
             <div className="text-xs font-medium text-[#777583]">Online</div>
           </div>
         </div>

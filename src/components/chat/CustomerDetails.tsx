@@ -2,6 +2,8 @@
 import { Edit, Paperclip, Smile } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { useUserDisplayName } from '@/hooks/useUserDisplayName';
+import { Avatar } from '@/components/common/Avatar';
 import type { Chat } from '@/types/chat';
 
 interface CustomerDetailsProps {
@@ -9,6 +11,9 @@ interface CustomerDetailsProps {
 }
 
 export function CustomerDetails({ chat }: CustomerDetailsProps) {
+  const displayName = useUserDisplayName(chat?.userId || null);
+  const nameToShow = displayName || chat?.userId || 'Unknown';
+
   if (!chat) {
     return (
       <div className="w-[317px] h-full bg-white border-l border-[#F3F3F3] p-6">
@@ -24,8 +29,8 @@ export function CustomerDetails({ chat }: CustomerDetailsProps) {
       {/* Header */}
       <div className="p-6 border-b border-[#F3F3F3] flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded-full bg-gray-200" />
-          <div className="text-sm font-semibold">{chat.userId}</div>
+          <Avatar userId={chat?.userId || null} size="sm" />
+          <div className="text-sm font-semibold">{nameToShow}</div>
         </div>
         <Button
           variant="outline"

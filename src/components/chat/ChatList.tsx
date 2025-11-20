@@ -2,22 +2,10 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, MoreVertical } from 'lucide-react';
 import { useChats } from '@/hooks/useChats';
+import { useUserDisplayName } from '@/hooks/useUserDisplayName';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
+import { Avatar } from '@/components/common/Avatar';
 import type { Chat } from '@/types/chat';
-
-function getInitials(name: string): string {
-  const parts = name.split(' ');
-  if (parts.length >= 2) {
-    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-  }
-  return name.substring(0, 2).toUpperCase();
-}
-
-function getAvatarColor(userId: string): string {
-  const colors = ['#DFE7AE', '#E8AEE8', '#D9D9D9'];
-  const index = userId.charCodeAt(0) % colors.length;
-  return colors[index];
-}
 
 interface ChatItemProps {
   chat: Chat;
@@ -26,8 +14,8 @@ interface ChatItemProps {
 }
 
 function ChatItem({ chat, isActive, onClick }: ChatItemProps) {
-  const avatarColor = getAvatarColor(chat.userId);
-  const initials = getInitials(chat.userId);
+  const displayName = useUserDisplayName(chat.userId);
+  const nameToShow = displayName || chat.userId;
   const lastMessage = chat.lastMessage?.content || 'No messages yet';
 
   return (
@@ -38,16 +26,11 @@ function ChatItem({ chat, isActive, onClick }: ChatItemProps) {
       onClick={onClick}
     >
       <div className="relative">
-        <div
-          className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium"
-          style={{ backgroundColor: avatarColor }}
-        >
-          {initials}
-        </div>
+        <Avatar userId={chat.userId} size="md" />
       </div>
       <div className="flex-1 min-w-0">
         <div className="text-sm font-semibold text-[#414651] mb-1">
-          {chat.userId}
+          {nameToShow}
         </div>
         <div className="text-xs font-medium text-[#757285] truncate">
           {lastMessage}

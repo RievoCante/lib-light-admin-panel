@@ -38,7 +38,7 @@ function AppContent() {
     return () => unsubscribe();
   }, []);
 
-  // Show nothing while checking auth state
+  // Show loading screen while checking auth state
   if (!authInitialized) {
     return (
       <div className="min-h-screen bg-[#FBFBFB] flex items-center justify-center">
