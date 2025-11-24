@@ -14,6 +14,7 @@ export interface Chat {
   userId: string;
   createdAt: Date;
   updatedAt: Date;
+  lastReadAt?: Date; // Admin read timestamp
   lastMessage?: SupportMessage; // For list display
 }
 

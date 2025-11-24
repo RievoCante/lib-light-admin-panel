@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, MoreVertical } from 'lucide-react';
 import { useChats } from '@/hooks/useChats';
 import { useUserDisplayName } from '@/hooks/useUserDisplayName';
+import { useUnreadCount } from '@/hooks/useUnreadCount';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 import { Avatar } from '@/components/common/Avatar';
 import type { Chat } from '@/types/chat';
@@ -17,6 +18,7 @@ function ChatItem({ chat, isActive, onClick }: ChatItemProps) {
   const displayName = useUserDisplayName(chat.userId);
   const nameToShow = displayName || chat.userId;
   const lastMessage = chat.lastMessage?.content || 'No messages yet';
+  const unreadCount = useUnreadCount(chat, isActive);
 
   return (
     <div
@@ -38,9 +40,11 @@ function ChatItem({ chat, isActive, onClick }: ChatItemProps) {
       </div>
       <div className="flex flex-col items-center gap-1">
         <MoreVertical className="w-4 h-4 text-[#757285]" />
-        <div className="h-4 w-4 bg-[#D34827] rounded text-[10px] text-white flex items-center justify-center font-medium">
-          1
-        </div>
+        {unreadCount > 0 && (
+          <div className="h-4 w-4 bg-[#D34827] rounded text-[10px] text-white flex items-center justify-center font-medium">
+            {unreadCount}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -33,6 +33,9 @@ export function useChats(): UseChatsReturn {
                 userId: data.userId || doc.id,
                 createdAt: convertTimestamp(data.createdAt),
                 updatedAt: convertTimestamp(data.updatedAt),
+                lastReadAt: data.lastReadAt
+                  ? convertTimestamp(data.lastReadAt)
+                  : undefined,
                 lastMessage: data.lastMessage
                   ? {
                       ...data.lastMessage,

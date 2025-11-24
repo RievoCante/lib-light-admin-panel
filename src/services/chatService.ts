@@ -40,6 +40,21 @@ export async function updateChatTimestamp(chatId: string): Promise<void> {
 }
 
 /**
+ * Mark a chat as read by updating the lastReadAt timestamp
+ */
+export async function markChatAsRead(chatId: string): Promise<void> {
+  try {
+    const chatRef = doc(db, 'chats', chatId);
+    await updateDoc(chatRef, {
+      lastReadAt: serverTimestamp(),
+    });
+  } catch (error) {
+    console.error('Error marking chat as read:', error);
+    throw new Error('Failed to mark chat as read');
+  }
+}
+
+/**
  * Convert Firestore timestamp to Date
  */
 export function convertTimestamp(timestamp: Timestamp | Date): Date {
