@@ -1,4 +1,5 @@
 // Chat list component (304px wide) matching Figma design
+import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, MoreVertical } from 'lucide-react';
 import { useChats } from '@/hooks/useChats';
@@ -8,17 +9,25 @@ import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 import { Avatar } from '@/components/common/Avatar';
 import type { Chat } from '@/types/chat';
 
+type FilterType = 'all' | 'unread';
+
 interface ChatItemProps {
   chat: Chat;
   isActive: boolean;
   onClick: () => void;
+  filter: FilterType;
 }
 
-function ChatItem({ chat, isActive, onClick }: ChatItemProps) {
+function ChatItem({ chat, isActive, onClick, filter }: ChatItemProps) {
   const displayName = useUserDisplayName(chat.userId);
   const nameToShow = displayName || chat.userId;
   const lastMessage = chat.lastMessage?.content || 'No messages yet';
   const unreadCount = useUnreadCount(chat, isActive);
+
+  // Hide if filter is 'unread' and chat has no unread messages
+  if (filter === 'unread' && unreadCount === 0) {
+    return null;
+  }
 
   return (
     <div
@@ -54,6 +63,7 @@ export function ChatList() {
   const { chatId } = useParams<{ chatId: string }>();
   const navigate = useNavigate();
   const { chats, loading, error } = useChats();
+  const [filter, setFilter] = useState<FilterType>('all');
 
   if (loading) {
     return (
@@ -80,15 +90,28 @@ export function ChatList() {
           <div className="text-sm font-medium">John Doe</div>
         </div>
         <div className="flex items-center gap-3">
-          <button className="h-7 px-2 py-1.5 bg-white rounded-md border border-[#EBEAEF] shadow-sm flex items-center gap-2">
-            <div className="w-2.5 h-2.5 bg-[#FD3C39] rounded-full" />
-            <span className="text-xs font-semibold">Open</span>
+          <button
+            onClick={() => setFilter('all')}
+            className={`h-7 px-2 py-1.5 rounded-md border shadow-sm flex items-center gap-2 ${
+              filter === 'all'
+                ? 'bg-[#EFF6FE] border-[#1D7AD6]'
+                : 'bg-white border-[#EBEAEF]'
+            }`}
+          >
+            <span className="text-xs font-semibold">All</span>
             <div className="w-3 h-3">
               <div className="w-1.5 h-1.5 bg-black rounded-full" />
             </div>
           </button>
-          <button className="h-7 px-2 py-1.5 bg-[#EFF6FE] rounded-md border border-[#1D7AD6] shadow-sm flex items-center gap-2">
-            <span className="text-xs font-semibold">Newest</span>
+          <button
+            onClick={() => setFilter('unread')}
+            className={`h-7 px-2 py-1.5 rounded-md border shadow-sm flex items-center gap-2 ${
+              filter === 'unread'
+                ? 'bg-[#EFF6FE] border-[#1D7AD6]'
+                : 'bg-white border-[#EBEAEF]'
+            }`}
+          >
+            <span className="text-xs font-semibold">Unread</span>
             <div className="w-3 h-3">
               <div className="w-1.5 h-1.5 bg-black rounded-full" />
             </div>
@@ -107,6 +130,7 @@ export function ChatList() {
               chat={chat}
               isActive={chat.id === chatId}
               onClick={() => navigate(`/chats/${chat.id}`)}
+              filter={filter}
             />
           ))
         )}
