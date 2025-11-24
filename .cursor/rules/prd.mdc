@@ -31,9 +31,14 @@ Build a web-based admin panel for customer support to read and reply to messages
 
     - Fetch and display all documents from the `chats` collection.
     - List must be sorted by the `updatedAt` field (descending).
-    - Each item shows: User ID, last message preview, and a relative timestamp.
+    - Each item shows: User ID, last message preview, and unread message count badge.
     - List must update in **real-time** (use `onSnapshot`).
     - Clicking a chat item navigates to `/chats/:chatId`.
+    - **Filter functionality:**
+      - "All" filter: Shows all chats (default).
+      - "Unread" filter: Shows only chats with unread messages.
+    - **Unread count:** Displays a red badge with the number of unread messages (consecutive user messages after the last admin response).
+    - **Read status:** When a chat is viewed, it's automatically marked as read by updating the `lastReadAt` timestamp in Firestore.
 
 3.  **Conversation View (Right Panel):**
 
@@ -62,6 +67,7 @@ Build a web-based admin panel for customer support to read and reply to messages
   - userId: string
   - createdAt: timestamp
   - updatedAt: timestamp
+  - lastReadAt?: timestamp  // Admin read status (when chat was last viewed)
 
   /messages/{messageId}/
     - chatId: string
@@ -90,6 +96,7 @@ interface Chat {
   userId: string;
   createdAt: Date;
   updatedAt: Date;
+  lastReadAt?: Date; // Admin read timestamp
   lastMessage?: SupportMessage; // For list display
 }
 ```
@@ -120,6 +127,12 @@ await addDoc(messagesRef, {
 const chatRef = doc(db, 'chats', chatId);
 await updateDoc(chatRef, {
   updatedAt: serverTimestamp(),
+});
+
+// 5. Mark a chat as read (update lastReadAt)
+const chatRef = doc(db, 'chats', chatId);
+await updateDoc(chatRef, {
+  lastReadAt: serverTimestamp(),
 });
 ```
 
@@ -156,7 +169,9 @@ VITE_ADMIN_PASSWORD=change-this-password
   │   └── firebase.ts
   ├── hooks/
   │   ├── useChats.ts
-  │   └── useMessages.ts
+  │   ├── useMessages.ts
+  │   ├── useUnreadCount.ts
+  │   └── useReadMessages.ts
   ├── services/
   │   ├── chatService.ts
   │   └── messageService.ts

@@ -1,7 +1,7 @@
 // Chat list component (304px wide) matching Figma design
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, MoreVertical } from 'lucide-react';
+import { MoreVertical } from 'lucide-react';
 import { useChats } from '@/hooks/useChats';
 import { useUserDisplayName } from '@/hooks/useUserDisplayName';
 import { useUnreadCount } from '@/hooks/useUnreadCount';
@@ -85,10 +85,6 @@ export function ChatList() {
     <div className="w-[304px] h-full bg-[#FDFDFD] border-r border-[#F3F3F3] flex flex-col">
       {/* Header */}
       <div className="p-4 border-b border-[#F3F3F3]">
-        <div className="flex items-center gap-3.5 mb-4">
-          <ArrowLeft className="w-4 h-4" />
-          <div className="text-sm font-medium">John Doe</div>
-        </div>
         <div className="flex items-center gap-3">
           <button
             onClick={() => setFilter('all')}
