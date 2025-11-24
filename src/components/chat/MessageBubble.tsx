@@ -11,10 +11,10 @@ export function MessageBubble({ message }: MessageBubbleProps) {
   const timeStr = format(message.timestamp, 'HH:mm');
 
   if (isAdmin) {
-    // Admin messages: blue, left-aligned
+    // Admin messages: blue, right-aligned
     return (
-      <div className="flex justify-start mb-4">
-        <div className="max-w-[401px] bg-[#1D7AD6] text-white rounded-tl-xl rounded-tr-xl rounded-bl-xl px-3 py-2">
+      <div className="flex justify-end mb-4">
+        <div className="max-w-[401px] bg-[#1D7AD6] text-white rounded-2xl rounded-br-sm px-3 py-2">
           <div className="text-xs font-medium leading-4 mb-2.5">
             {message.content}
           </div>
@@ -26,10 +26,10 @@ export function MessageBubble({ message }: MessageBubbleProps) {
     );
   }
 
-  // User messages: gray, right-aligned
+  // User messages: gray, left-aligned
   return (
-    <div className="flex justify-end mb-4">
-      <div className="max-w-[188px] bg-[#F3F4F6] text-black rounded-tl-xl rounded-tr-xl rounded-br-xl px-3 py-2">
+    <div className="flex justify-start mb-4">
+      <div className="max-w-[188px] bg-[#F3F4F6] text-black rounded-2xl rounded-bl-sm px-3 py-2">
         <div className="text-xs font-medium leading-4 mb-2.5">
           {message.content}
         </div>

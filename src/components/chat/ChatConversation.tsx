@@ -72,7 +72,6 @@ export function ChatConversation({ chat }: ChatConversationProps) {
           <Avatar userId={chat?.userId || null} size="sm" />
           <div>
             <div className="text-xs font-semibold">{nameToShow}</div>
-            <div className="text-xs font-medium text-[#777583]">Online</div>
           </div>
         </div>
         <div className="flex items-center gap-3">
